@@ -1,3 +1,7 @@
+from ya_create import Yandex
+import configparser
+
+
 # Task 1
 def get_visits():
     geo_logs = [
@@ -20,12 +24,6 @@ def get_visits():
     return sorted_geo_logs
 
 
-sorted_geo_logs = get_visits()
-for visit in sorted_geo_logs:
-    print(visit)
-print()
-
-
 # Task 2
 def get_unique_id(ids):
     unique_id = []
@@ -34,13 +32,6 @@ def get_unique_id(ids):
     unique_id = list(set(unique_id))
     unique_id.sort()
     return unique_id
-
-ids = {'user1': [213, 213, 213, 15, 213],
-       'user2': [54, 54, 119, 119, 119],
-       'user3': [213, 98, 98, 35]}
-unique_id = get_unique_id(ids)
-print(*sorted(unique_id))
-print()
 
 
 # Task 3
@@ -66,24 +57,10 @@ def get_count_queries_words():
     return len_queries
 
 
-querie_words = get_count_queries_words()
-
-print(f'''поисковых запросов из:
-одного слова - {querie_words[1]}
-двух слов - {querie_words[2]}
-трёх слов - {querie_words[3]}
-четырёх слов - {querie_words[4]}''')
-print()
-
-
 # Task 4
 def get_max_sales(stats):
     max_sales = max(stats.items(), key=lambda x: x[1])
     return max_sales[0]
-
-stats = {'facebook': 55, 'yandex': 120, 'vk': 115, 'google': 99, 'email': 42, 'ok': 98}
-print(get_max_sales(stats))
-print()
 
 
 # Task 5
@@ -100,4 +77,51 @@ def get_address():
     return any_dict
 
 
-print(get_address())
+def get_token():
+    config = configparser.ConfigParser()
+    config.read("tokens.ini")
+    token = config['TOKENS']['ya_token']
+
+    return token
+
+
+def create_folder(folder_name, token):
+    yandex = Yandex(token)
+    response = yandex.get_upload_link(folder_name)
+    print(response)
+    return response
+
+
+if __name__ == '__main__':
+
+    sorted_geo_logs = get_visits()
+    for visit in sorted_geo_logs:
+        print(visit)
+    print()
+
+    ids = {'user1': [213, 213, 213, 15, 213],
+           'user2': [54, 54, 119, 119, 119],
+           'user3': [213, 98, 98, 35]}
+    unique_id = get_unique_id(ids)
+    print(*sorted(unique_id))
+    print()
+
+    querie_words = get_count_queries_words()
+
+    print(f'''поисковых запросов из:
+    одного слова - {querie_words[1]}
+    двух слов - {querie_words[2]}
+    трёх слов - {querie_words[3]}
+    четырёх слов - {querie_words[4]}''')
+    print()
+
+    stats = {'facebook': 55, 'yandex': 120, 'vk': 115, 'google': 99, 'email': 42, 'ok': 98}
+    print(get_max_sales(stats))
+    print()
+
+    print(get_address())
+    print()
+
+    token = get_token()
+    folder = 'newfolder'
+    print(create_folder(folder, token))

@@ -1,5 +1,7 @@
 from main import *
 import pytest
+import configparser
+from ya_create import Yandex
 
 
 @pytest.mark.parametrize(
@@ -24,6 +26,7 @@ def test_get_visits():
     res = len(get_visits())
     assert res == answer
 
+
 @pytest.mark.parametrize(
     "ids, unique",
     [({'user1': [213, 213, 213, 15, 213],
@@ -45,3 +48,25 @@ def test_get_count_queries_words():
     answer = [0, 3, 4, 0]
     res = list(get_count_queries_words().values())
     assert res == answer
+
+
+@pytest.fixture
+def get_token_test():
+    import configparser
+
+    config = configparser.ConfigParser()
+    config.read("tokens.ini")
+    token = config['TOKENS']['ya_token']
+
+    return token
+
+
+@pytest.mark.parametrize(
+    "folder_name, answer",
+    [('test_folder', 201),
+     ('test_new_folder', 201),
+     ('test_folder', 409)]
+)
+def test_create_folder(folder_name, answer, get_token_test):
+    response = create_folder(folder_name, get_token_test)
+    assert response == answer
